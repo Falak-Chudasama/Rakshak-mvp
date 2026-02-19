@@ -41,17 +41,16 @@ void loop() {
 
     Serial.println("Button Pressed");
 
-    LoRa.beginPacket();
-    LoRa.print("ALERT");
-    LoRa.endPacket();
-
-    Serial.println("ALERT sent");
-
+    
     for (int i = 0; i < 10; i++) {
       digitalWrite(LED_PIN, HIGH);
       digitalWrite(BUZZER_PIN, HIGH);
+      LoRa.beginPacket();
+      LoRa.print("ALERT");
+      LoRa.endPacket();
+      Serial.println("ALERT sent");
       delay(300);
-
+      
       digitalWrite(LED_PIN, LOW);
       digitalWrite(BUZZER_PIN, LOW);
       delay(300);
