@@ -14,6 +14,8 @@ void setup() {
   Serial.begin(9600);
   delay(1000);
 
+  Serial.println("\n--- LoRa TRANSMITTER ---");
+
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
@@ -32,28 +34,41 @@ void setup() {
     while (true);
   }
 
-  Serial.println("System Ready ✅");
+  // LOCK PARAMETERS
+  LoRa.setSpreadingFactor(7);
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.setSyncWord(0xA5);
+  LoRa.enableCrc();
+  LoRa.setTxPower(17);  // Max safe for RA-02
+
+  Serial.println("LoRa initialized ✅");
 }
 
 void loop() {
 
   if (digitalRead(BUTTON_PIN) == LOW) {
 
-    Serial.println("Button Pressed");
+    Serial.println("Button pressed. Sending ALERT...");
 
-    
     for (int i = 0; i < 10; i++) {
       digitalWrite(LED_PIN, HIGH);
       digitalWrite(BUZZER_PIN, HIGH);
+    
       LoRa.beginPacket();
       LoRa.print("ALERT");
-      LoRa.endPacket();
-      Serial.println("ALERT sent");
-      delay(300);
-      
+      int result = LoRa.endPacket();
+    
+      if (result == 1) {
+        Serial.println("ALERT sent successfully ✅");
+      } else {
+        Serial.println("ALERT send failed ❌");
+      }
+  
+      delay(200);
       digitalWrite(LED_PIN, LOW);
       digitalWrite(BUZZER_PIN, LOW);
-      delay(300);
+      delay(200);
     }
 
     while (digitalRead(BUTTON_PIN) == LOW);

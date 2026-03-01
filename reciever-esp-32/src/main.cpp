@@ -13,6 +13,8 @@ void setup() {
   Serial.begin(9600);
   delay(1000);
 
+  Serial.println("\n--- LoRa RECEIVER ---");
+
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
 
@@ -30,6 +32,13 @@ void setup() {
     while (true);
   }
 
+  // LOCK PARAMETERS (MUST MATCH TRANSMITTER)
+  LoRa.setSpreadingFactor(7);
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.setSyncWord(0xA5);
+  LoRa.enableCrc();
+
   Serial.println("LoRa Receiver Ready ✅");
 }
 
@@ -39,27 +48,26 @@ void loop() {
 
   if (packetSize) {
 
-    Serial.println("LoRa Packet Detected!");
+    String incoming = "";
 
-    Serial.print("Received: ");
     while (LoRa.available()) {
-      Serial.print((char)LoRa.read());
+      incoming += (char)LoRa.read();
     }
 
-    Serial.print(" | RSSI: ");
-    Serial.println(LoRa.packetRssi());
+    Serial.print("Received: ");
+    Serial.println(incoming);
 
-    // Activate alert for 10 minutes
-    digitalWrite(LED_PIN, HIGH);
-    digitalWrite(BUZZER_PIN, HIGH);
+    if (incoming == "ALERT") {
 
-    Serial.println("Alert Active for 10 minutes");
+      Serial.println("Valid ALERT received ✅");
 
-    delay(300);
+      digitalWrite(LED_PIN, HIGH);
+      digitalWrite(BUZZER_PIN, HIGH);
 
-    digitalWrite(LED_PIN, LOW);
-    digitalWrite(BUZZER_PIN, LOW);
+      delay(200);
 
-    Serial.println("Alert Ended");
+      digitalWrite(LED_PIN, LOW);
+      digitalWrite(BUZZER_PIN, LOW);
+    }
   }
 }
