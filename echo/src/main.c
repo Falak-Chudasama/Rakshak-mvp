@@ -7,7 +7,6 @@
 #include "hardware/button.h"
 #include "hardware/led.h"
 #include "hardware/buzzer.h"
-#include "lora.h"
 
 void app_main()
 {
@@ -17,7 +16,12 @@ void app_main()
     init_button();
     while (1)
     {
-        lora_send_alert();
-        vTaskDelay(1000);
+        buzzer_on();
+        led_on();
+        vTaskDelay(pdMS_TO_TICKS(200));
+        
+        buzzer_off();
+        led_off();
+        vTaskDelay(pdMS_TO_TICKS(200));
     }
 }

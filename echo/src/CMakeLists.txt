@@ -9,7 +9,6 @@ idf_component_register(
         "hardware/led.h"
         "hardware/buzzer.h"
         "hardware/button.h"
-        "hardware/lora.h"
     INCLUDE_DIRS 
         "."
         "tasks"
