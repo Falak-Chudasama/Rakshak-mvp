@@ -1,3 +1,2 @@
-#include "alert.c"
-
+#pragma once
 void alert_protocol();
