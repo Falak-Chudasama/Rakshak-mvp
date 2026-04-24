@@ -1,18 +1,17 @@
 #include <Arduino.h>
 #include "alert.h"
+#include "../configs.h"
 #include "../hardware/led.h"
+#include "../hardware/buzzer.h"
 
-void trigger_echo_alert(int source_id, const char* location) {
-    Serial.printf("\n[!!!] ALERT RECEIVED [!!!]\n");
-    Serial.printf("Source Node ID: %d\n", source_id);
-    Serial.printf("Location: %s\n", location);
-    Serial.println("--------------------------");
-
-    // Violently blink the LED 5 times to indicate an alert
-    for (int i = 0; i < 5; i++) {
+void alert_protocol() {
+    unsigned long start = millis();
+    while (millis() - start < ALERT_DURATION) {
+        buzzer_on();
         led_on();
-        delay(100);
+        delay(150);
+        buzzer_off();
         led_off();
-        delay(100);
+        delay(150);
     }
 }

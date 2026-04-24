@@ -5,15 +5,12 @@
 #include "hardware/button.h"
 #include "hardware/lora_node.h"
 
-unsigned long lastSendTime = 0;
-
 void setup() {
     Serial.begin(BAUD_RATE);
-    while (!Serial); // Wait for serial monitor to connect
+    while (!Serial);
 
     Serial.printf("\n--- Rakshak Node Started | ID: %d ---\n", DEVICE_ID);
 
-    // Initialize every single component
     init_led();
     init_buzzer();
     init_button();
@@ -21,12 +18,13 @@ void setup() {
 }
 
 void loop() {
-    // Dead simple: Emit LoRa signal every 1 second
-    if (millis() - lastSendTime >= 1000) {
-        lastSendTime = millis();
-        
-        led_on();             // Visual indicator of sending
-        lora_send_alert();    // Transmit
-        led_off();            // Turn off visual indicator
+    if (button_pressed()) 
+    {
+        // led_on();
+        // buzzer_on();
+        lora_send_alert();
+        // led_off();
+        // buzzer_off();
+        delay(500);
     }
 }

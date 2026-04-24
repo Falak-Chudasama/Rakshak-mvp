@@ -4,7 +4,7 @@
 
 void init_led() {
     pinMode(LED_PIN, OUTPUT);
-    digitalWrite(LED_PIN, LOW); // Start with LED off
+    digitalWrite(LED_PIN, LOW);
 }
 
 void led_on() { digitalWrite(LED_PIN, HIGH); }
