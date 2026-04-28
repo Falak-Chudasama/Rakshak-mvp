@@ -15,6 +15,8 @@
 
 #define ALERT_DURATION 1
 
+#define BUTTON_WAKEUP_PIN GPIO_NUM_14
+
 #define DEVICE_ID 1
 #define DEVICE_LOCATION "Nakshatra Garden"
 // #define DEVICE_ID 2

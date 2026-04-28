@@ -47,7 +47,11 @@ void lora_receive_alert() {
         char rx_loc[64];
         
         if (sscanf(incoming.c_str(), "ID:%d,LOC:%s", &rx_id, rx_loc) == 2) {
-            Serial.printf("--- DECODED --- From ID: %d | Loc: %s\n", rx_id, rx_loc);
+            Serial.printf("--- DECODED --- From ID: %d | Loc: %s | RSSI: %d dBm | SNR: %.1f\n", 
+                rx_id, rx_loc, 
+                LoRa.packetRssi(),
+                LoRa.packetSnr()
+            );
             alert_protocol(); // Trigger buzzer/LED
         } else {
             Serial.println("Received unknown format.");

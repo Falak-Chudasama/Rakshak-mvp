@@ -20,11 +20,11 @@ void setup() {
 void loop() {
     if (button_pressed()) 
     {
-        // led_on();
+        led_on();
         // buzzer_on();
         lora_send_alert();
-        // led_off();
-        // buzzer_off();
+        led_off();
+        buzzer_off();
         delay(500);
     }
 }
