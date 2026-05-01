@@ -16,10 +16,11 @@ void init_lora_node() {
         while (1);
     }
     
-    LoRa.setSpreadingFactor(10);
+    LoRa.setSpreadingFactor(12);
     LoRa.setSignalBandwidth(125E3);
     LoRa.setCodingRate4(8);
     LoRa.setTxPower(20);
+    LoRa.setPreambleLength(16);
     LoRa.enableCrc();
     Serial.println("LoRa Initialized Successfully!");
 }
