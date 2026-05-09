@@ -13,11 +13,4 @@
 #define LORA_RST_GPIO 13
 #define LORA_DIO0_GPIO 26
 
-#define ALERT_DURATION 1
-
-#define DEVICE_ID 1
-#define DEVICE_LOCATION "Nakshatra Garden"
-// #define DEVICE_ID 2
-// #define DEVICE_LOCATION "Nakshatra Garden"
-// #define DEVICE_ID 3
-// #define DEVICE_LOCATION "Nakshatra Garden"
+#define LORA_DIO0_WAKEUP_PIN GPIO_NUM_26

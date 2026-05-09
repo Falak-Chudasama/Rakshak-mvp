@@ -1,2 +1,2 @@
 #pragma once
-void alert_protocol();
+void echo_alert_pattern(int id);

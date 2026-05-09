@@ -3,15 +3,21 @@
 #include "../configs.h"
 #include "../hardware/led.h"
 #include "../hardware/buzzer.h"
+#include "../hardware/button.h"
 
-void alert_protocol() {
-    unsigned long start = millis();
-    while (millis() - start < ALERT_DURATION) {
+void echo_alert_pattern(int id) {
+    for (int i = 0; i < id; i++) {
         buzzer_on();
         led_on();
-        delay(150);
+        delay(200);
         buzzer_off();
         led_off();
-        delay(150);
+        delay(200);
+    }
+    
+    unsigned long pause_start = millis();
+    while (millis() - pause_start < 1000) {
+        if (button_pressed()) return;
+        delay(10);
     }
 }

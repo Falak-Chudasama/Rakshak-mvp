@@ -3,16 +3,13 @@
 #include <LoRa.h>
 #include "lora_node.h"
 #include "../configs.h"
-#include "../protocols/alert.h"
 
 void init_lora_node() {
-    Serial.println("Initializing LoRa...");
-    
-    // Override default pins
+    Serial.println("Init LoRa");
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
 
-    if (!LoRa.begin(433E6)) {
-        Serial.println("Starting LoRa failed! Check your wiring.");
+    if (!LoRa.begin(866E6)) { // 433E6 | 866E6
+        Serial.println("LoRa Failed");
         while (1);
     }
     
@@ -22,36 +19,41 @@ void init_lora_node() {
     LoRa.setTxPower(20);
     LoRa.setPreambleLength(16);
     LoRa.enableCrc();
-    Serial.println("LoRa Initialized Successfully!");
+    Serial.println("LoRa Ready");
 }
 
 void lora_send_alert() {
     char tx_buffer[128];
-    snprintf(tx_buffer, sizeof(tx_buffer), "ID:%d,LOC:%s", DEVICE_ID, DEVICE_LOCATION);
+    snprintf(tx_buffer, sizeof(tx_buffer), "A,ID:%d,LOC:%s", DEVICE_ID, DEVICE_LOCATION);
 
-    Serial.printf("Sending: %s\n", tx_buffer);
+    Serial.printf("TX: %s\n", tx_buffer);
     
     LoRa.beginPacket();
     LoRa.print(tx_buffer);
     LoRa.endPacket();
 }
 
-void lora_receive_alert() {
-    int packetSize = LoRa.parsePacket();
-    if (packetSize) {
-        String incoming = "";
-        while (LoRa.available()) {
-            incoming += (char)LoRa.read();
-        }
+bool lora_wait_ack() {
+    LoRa.receive();
+    unsigned long start = millis();
+    while (millis() - start < 1500) {
+        int packetSize = LoRa.parsePacket();
+        if (packetSize) {
+            String incoming = "";
+            while (LoRa.available()) {
+                incoming += (char)LoRa.read();
+            }
 
-        int rx_id;
-        char rx_loc[64];
-        
-        if (sscanf(incoming.c_str(), "ID:%d,LOC:%s", &rx_id, rx_loc) == 2) {
-            Serial.printf("--- DECODED --- From ID: %d | Loc: %s\n", rx_id, rx_loc);
-            alert_protocol(); // Trigger buzzer/LED
-        } else {
-            Serial.println("Received unknown format.");
+            int ack_id;
+            if (sscanf(incoming.c_str(), "ACK:%d", &ack_id) == 1) {
+                if (ack_id == DEVICE_ID) {
+                    Serial.println("ACK RX");
+                    LoRa.sleep();
+                    return true;
+                }
+            }
         }
     }
+    LoRa.sleep();
+    return false;
 }
