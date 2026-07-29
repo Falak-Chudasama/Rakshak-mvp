@@ -27,8 +27,8 @@ void setup() {
         if (!cooldown_active) {
             run_node_alert_sequence();
             cooldown_active = true;
-            Serial.println("Cooldown 15s");
-            delay(15000);
+            Serial.println("Cooldown 3s");
+            delay(3000);
             cooldown_active = false;
         } else {
             Serial.println("Cooldown Active");

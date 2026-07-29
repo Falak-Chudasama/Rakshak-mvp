@@ -8,7 +8,7 @@ void init_lora_node() {
     Serial.println("Init LoRa");
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
 
-    if (!LoRa.begin(866E6)) { // 433E6 | 866E6
+    if (!LoRa.begin(433E6)) { // 433E6 | 866E6
         Serial.println("LoRa Failed");
         while (1);
     }
@@ -35,8 +35,9 @@ void lora_send_alert() {
 
 bool lora_wait_ack() {
     LoRa.receive();
+
     unsigned long start = millis();
-    while (millis() - start < 1500) {
+    while (millis() - start < 4000) {
         int packetSize = LoRa.parsePacket();
         if (packetSize) {
             String incoming = "";
@@ -53,7 +54,10 @@ bool lora_wait_ack() {
                 }
             }
         }
+
+        delay(10);
     }
+
     LoRa.sleep();
     return false;
 }

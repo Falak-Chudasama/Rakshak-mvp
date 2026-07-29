@@ -5,19 +5,35 @@
 #include "../hardware/buzzer.h"
 #include "../hardware/button.h"
 
-void echo_alert_pattern(int id) {
+bool echo_alert_pattern(int id) {
+    auto pulse_phase = [](int ms) -> bool {
+        unsigned long start = millis();
+        while (millis() - start < (unsigned long)ms) {
+            if (button_pressed()) {
+                buzzer_off();
+                led_off();
+                return true;
+            }
+            delay(10);
+        }
+        buzzer_off();
+        led_off();
+        return false;
+    };
+
     for (int i = 0; i < id; i++) {
         buzzer_on();
         led_on();
-        delay(200);
+        if (pulse_phase(200)) return true;
+
         buzzer_off();
         led_off();
-        delay(200);
+        if (pulse_phase(200)) return true;
     }
-    
-    unsigned long pause_start = millis();
-    while (millis() - pause_start < 1000) {
-        if (button_pressed()) return;
-        delay(10);
-    }
+
+    if (pulse_phase(1000)) return true;
+
+    buzzer_off();
+    led_off();
+    return false;
 }

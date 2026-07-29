@@ -8,7 +8,7 @@ void init_lora_node() {
     Serial.println("Init LoRa");
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
 
-    if (!LoRa.begin(866E6)) { // 433E6 | 866E6
+    if (!LoRa.begin(433E6)) { // 433E6 | 866E6
         Serial.println("LoRa Failed");
         while (1);
     }
@@ -47,8 +47,10 @@ void lora_send_ack(int id) {
     snprintf(tx_buffer, sizeof(tx_buffer), "ACK:%d", id);
 
     Serial.printf("TX: %s\n", tx_buffer);
-    
+
+    LoRa.idle();
     LoRa.beginPacket();
     LoRa.print(tx_buffer);
     LoRa.endPacket();
+    LoRa.receive();
 }

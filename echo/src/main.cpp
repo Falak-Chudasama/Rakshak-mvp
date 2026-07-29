@@ -34,13 +34,14 @@ void loop() {
         bool ack_sent = false;
         
         while (millis() - alert_start < 60000) {
-            if (button_pressed()) {
+            if (button_pressed() || echo_alert_pattern(triggered_id)) {
                 Serial.println("Guard ACK");
+                lora_send_ack(triggered_id);
+                lora_send_ack(triggered_id);
                 lora_send_ack(triggered_id);
                 ack_sent = true;
                 break;
             }
-            echo_alert_pattern(triggered_id);
         }
         
         if (!ack_sent) {

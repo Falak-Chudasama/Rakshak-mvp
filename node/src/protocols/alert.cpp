@@ -11,7 +11,7 @@ void pulseTask(void *pvParameters) {
     while (alert_active) {
         buzzer_on();
         led_on();
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        vTaskDelay(300 / portTICK_PERIOD_MS);
         
         if (!alert_active) break; 
         
@@ -37,7 +37,7 @@ void run_node_alert_sequence() {
         NULL
     );
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 7; i++) {
         lora_send_alert();
         
         if (lora_wait_ack()) {
