@@ -36,10 +36,17 @@ void loop() {
         while (millis() - alert_start < 60000) {
             if (button_pressed() || echo_alert_pattern(triggered_id)) {
                 Serial.println("Guard ACK");
-                lora_send_ack(triggered_id);
-                lora_send_ack(triggered_id);
-                lora_send_ack(triggered_id);
-                ack_sent = true;
+
+                unsigned long ack_start = millis();
+                while (millis() - ack_start < 60000) {
+                    lora_send_ack(triggered_id);
+
+                    if (lora_wait_ack_ack(triggered_id, 1000)) {
+                        ack_sent = true;
+                        break;
+                    }
+                }
+
                 break;
             }
         }

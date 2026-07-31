@@ -4,6 +4,25 @@
 #include "lora_node.h"
 #include "../configs.h"
 
+static void lora_send_ack_ack(int id) {
+    char tx_buffer[32];
+    snprintf(tx_buffer, sizeof(tx_buffer), "ACKACK:%d", id);
+
+    for (int i = 0; i < 3; i++) {
+        Serial.printf("TX: %s\n", tx_buffer);
+
+        LoRa.idle();
+        LoRa.beginPacket();
+        LoRa.print(tx_buffer);
+        LoRa.endPacket();
+        LoRa.receive();
+
+        if (i < 2) {
+            delay(100);
+        }
+    }
+}
+
 void init_lora_node() {
     Serial.println("Init LoRa");
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
@@ -12,7 +31,7 @@ void init_lora_node() {
         Serial.println("LoRa Failed");
         while (1);
     }
-    
+
     LoRa.setSpreadingFactor(12);
     LoRa.setSignalBandwidth(125E3);
     LoRa.setCodingRate4(8);
@@ -27,7 +46,7 @@ void lora_send_alert() {
     snprintf(tx_buffer, sizeof(tx_buffer), "A,ID:%d,LOC:%s", DEVICE_ID, DEVICE_LOCATION);
 
     Serial.printf("TX: %s\n", tx_buffer);
-    
+
     LoRa.beginPacket();
     LoRa.print(tx_buffer);
     LoRa.endPacket();
@@ -37,7 +56,7 @@ bool lora_wait_ack() {
     LoRa.receive();
 
     unsigned long start = millis();
-    while (millis() - start < 4000) {
+    while (millis() - start < 1000) {
         int packetSize = LoRa.parsePacket();
         if (packetSize) {
             String incoming = "";
@@ -49,6 +68,7 @@ bool lora_wait_ack() {
             if (sscanf(incoming.c_str(), "ACK:%d", &ack_id) == 1) {
                 if (ack_id == DEVICE_ID) {
                     Serial.println("ACK RX");
+                    lora_send_ack_ack(ack_id);
                     LoRa.sleep();
                     return true;
                 }

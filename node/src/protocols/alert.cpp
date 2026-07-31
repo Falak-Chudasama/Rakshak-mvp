@@ -7,19 +7,19 @@
 
 volatile bool alert_active = false;
 
-void pulseTask(void *pvParameters) {
+static void pulseTask(void *pvParameters) {
     while (alert_active) {
         buzzer_on();
         led_on();
         vTaskDelay(300 / portTICK_PERIOD_MS);
-        
-        if (!alert_active) break; 
-        
+
+        if (!alert_active) break;
+
         buzzer_off();
         led_off();
         vTaskDelay(300 / portTICK_PERIOD_MS);
     }
-    
+
     buzzer_off();
     led_off();
     vTaskDelete(NULL);
@@ -27,7 +27,7 @@ void pulseTask(void *pvParameters) {
 
 void run_node_alert_sequence() {
     alert_active = true;
-    
+
     xTaskCreate(
         pulseTask,
         "PulseTask",
@@ -37,15 +37,15 @@ void run_node_alert_sequence() {
         NULL
     );
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 8; i++) {
         lora_send_alert();
-        
+
         if (lora_wait_ack()) {
             Serial.println("Stopped by ACK");
             break;
         }
     }
-    
-    alert_active = false; 
-    delay(400); 
+
+    alert_active = false;
+    delay(400);
 }
