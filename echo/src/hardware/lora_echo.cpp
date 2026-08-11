@@ -56,6 +56,12 @@ void lora_send_ack(int id) {
 }
 
 bool lora_wait_ack_ack(int id, unsigned long timeout_ms) {
+    // At SF12/125kHz/CR4:8, node's single "ACKACK:%d" reply takes
+    // roughly 1.4-1.5s of airtime by itself, on top of the time node
+    // needs to detect our "ACK:%d" and start its own transmit. Callers
+    // should pass a timeout comfortably above that (main.cpp now passes
+    // 3000ms instead of the previous 1000ms, which was shorter than the
+    // ack-ack's airtime alone).
     LoRa.receive();
 
     unsigned long start = millis();

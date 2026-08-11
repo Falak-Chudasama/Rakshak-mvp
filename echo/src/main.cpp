@@ -41,7 +41,7 @@ void loop() {
                 while (millis() - ack_start < 60000) {
                     lora_send_ack(triggered_id);
 
-                    if (lora_wait_ack_ack(triggered_id, 1000)) {
+                    if (lora_wait_ack_ack(triggered_id, 3000)) {
                         ack_sent = true;
                         break;
                     }
