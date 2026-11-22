@@ -8,7 +8,7 @@ void init_lora_node() {
     Serial.println("Init LoRa");
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
 
-    if (!LoRa.begin(433E6)) { // 433E6 | 866E6
+    if (!LoRa.begin(866E6)) { // 433E6 | 866E6
         Serial.println("LoRa Failed");
         while (1);
     }

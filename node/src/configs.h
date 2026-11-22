@@ -8,7 +8,7 @@
 
 #define LORA_SCK_GPIO 18
 #define LORA_MISO_GPIO 19
-#define LORA_MOSI_GPIO 23
+#define LORA_MOSI_GPIO 22 // Use 22 for damaged device, 23 for healthy
 #define LORA_CS_GPIO 5
 #define LORA_RST_GPIO 13
 #define LORA_DIO0_GPIO 26

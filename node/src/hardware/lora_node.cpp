@@ -30,9 +30,17 @@ static void lora_send_ack_ack(int id) {
 
 void init_lora_node() {
     Serial.println("Init LoRa");
+
+    SPI.begin(
+        LORA_SCK_GPIO,
+        LORA_MISO_GPIO,
+        LORA_MOSI_GPIO,
+        LORA_CS_GPIO
+    );
+
     LoRa.setPins(LORA_CS_GPIO, LORA_RST_GPIO, LORA_DIO0_GPIO);
 
-    if (!LoRa.begin(433E6)) { // 433E6 | 866E6
+    if (!LoRa.begin(433E6)) { // 866E6 | 866E6
         Serial.println("LoRa Failed");
         while (1);
     }
@@ -43,6 +51,7 @@ void init_lora_node() {
     LoRa.setTxPower(20);
     LoRa.setPreambleLength(16);
     LoRa.enableCrc();
+
     Serial.println("LoRa Ready");
 }
 
